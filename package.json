@@ -4,12 +4,16 @@
   "description": "The Poopscape backend",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "jonuy <jonathanjuy@gmail.com> (http://jonuy.com/)",
   "license": "MIT",
   "dependencies": {
+    "body-parser": "^1.14.1",
     "express": "^4.13.3",
-    "mongoose": "^4.2.5"
-  }
+    "mongoose": "^4.2.5",
+    "multer": "^1.1.0"
+  },
+  "repository": "https://github.com/jonuy/poopscape"
 }
