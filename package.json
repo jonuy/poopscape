@@ -1,0 +1,15 @@
+{
+  "name": "Poopscape",
+  "version": "0.1.0",
+  "description": "The Poopscape backend",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "jonuy <jonathanjuy@gmail.com> (http://jonuy.com/)",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.13.3",
+    "mongoose": "^4.2.5"
+  }
+}
