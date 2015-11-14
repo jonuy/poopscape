@@ -7,7 +7,6 @@ var schema = mongoose.Schema({
 
   // Address
   street_address: String,
-  street2_address: String,
   city_address: String,
   state_address: String,
   zip_address: String,
@@ -34,15 +33,14 @@ var schema = mongoose.Schema({
   approved: Boolean,
 
   // Geo location
-  geometry: {
-    type: String,
-    coordinates: {
-      type: [Number], // longitude, latitude
-      index: '2d'
-    }
+  loc: {
+    type: { type: String },
+    coordinates: [] // [lng, lat]
   }
 
 });
+
+schema.index({loc: '2dsphere'});
 
 module.exports = mongoose.model('Location', schema);
 
