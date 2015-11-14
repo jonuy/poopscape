@@ -10,8 +10,8 @@ var mongoose = require('mongoose');
  */
 router.get('/', function(req, res) {
   var query;
-  var lng = req.query.lng;
-  var lat = req.query.lat;
+  var lng = parseFloat(req.query.lng);
+  var lat = parseFloat(req.query.lat);
   var maxDist = req.query.max_distance ? Number(req.query.max_distance) : 1600;  // 1600 meters ~= 1 mile
 
   if (!lng) {
@@ -23,31 +23,23 @@ router.get('/', function(req, res) {
     return;
   }
 
-  query = Location.where(
-    {
-      loc: {
-        $near: {
-          $geometry: {type: 'Point', coordinates: [lng, lat]},
-          $maxDistance: maxDist
-        }
+  var point = {type: 'Point', coordinates: [lng, lat]};
+  Location.geoNear(point, { maxDistance: maxDist, spherical: true},
+    function(err, results, stats) {
+      if (err) {
+        console.log(err);
+        res.status(500).send('Error finding a location');
+        return;
+      }
+
+      if (results && results.length > 0) {
+        res.status(200).send(results);
+      }
+      else {
+        res.status(404).send('No locations nearby');
       }
     }
   );
-
-  query.find(function(err, docs) {
-    if (err) {
-      console.log(err);
-      res.status(500).send('Error finding a location');
-      return;
-    }
-
-    if (docs && docs.length > 0) {
-      res.status(200).send(docs);
-    }
-    else {
-      res.status(404).send('No locations nearby');
-    }
-  });
 });
 
 /**
