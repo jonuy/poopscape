@@ -1,4 +1,5 @@
 var express = require('express');
+var Review = require('./models/Review');
 var router = express.Router();
 
 var multer = require('multer');

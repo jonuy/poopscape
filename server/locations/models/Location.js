@@ -40,7 +40,9 @@ var schema = mongoose.Schema({
 
 });
 
-schema.index({loc: '2dsphere'});
+schema.index({
+  loc: '2dsphere'
+});
 
 module.exports = mongoose.model('Location', schema);
 
