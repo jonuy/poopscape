@@ -9,7 +9,7 @@ var mongoose = require('mongoose');
  * Return locations near points given in query params.
  */
 router.get('/', function(req, res) {
-  var query;
+  var promise;
   var lng = parseFloat(req.query.lng);
   var lat = parseFloat(req.query.lat);
   var maxDist = req.query.max_distance ? Number(req.query.max_distance) : 1600;  // 1600 meters ~= 1 mile
@@ -24,22 +24,25 @@ router.get('/', function(req, res) {
   }
 
   var point = {type: 'Point', coordinates: [lng, lat]};
-  Location.geoNear(point, { maxDistance: maxDist, spherical: true},
-    function(err, results, stats) {
-      if (err) {
-        console.log(err);
-        res.status(500).send('Error finding a location');
-        return;
-      }
+  promise = Location.geoNear(point, { maxDistance: maxDist, spherical: true});
+  promise.then(function(results, stats) {
+    var opts;
 
-      if (results && results.length > 0) {
-        res.status(200).send(results);
-      }
-      else {
-        res.status(404).send('No locations nearby');
-      }
+    if (results && results.length > 0) {
+      opts = [{path: 'obj.reviews', model: 'Review'}];
+      return Location.populate(results, opts);
     }
-  );
+    else {
+      res.status(404).send('No locations nearby');
+      throw new Error('No locations nearby');
+    }
+  }).then(function(results) {
+    res.status(200).send(results);
+  }).then(null, function(err) {
+    console.log(err);
+    res.status(500).send('Error finding a location');
+    throw new Error();
+  });
 });
 
 /**
@@ -48,7 +51,6 @@ router.get('/', function(req, res) {
  * Retrieve a specific location by id.
  */
 router.get('/:lid', function(req, res) {
-  var query;
   var lid = req.params.lid;
 
   // Valid ObjectId is either 12 byte string or 24 character hex
@@ -57,21 +59,22 @@ router.get('/:lid', function(req, res) {
     return;
   }
 
-  query = Location.where({_id: new mongoose.Types.ObjectId(lid)});
-  query.findOne(function(err, doc) {
-    if (err) {
-      console.log(err);
-      res.status().send('Error getting the location: ' + lid);
-      return;
-    }
+  Location.findOne({_id: new mongoose.Types.ObjectId(lid)})
+    .populate('reviews')
+    .exec(function(err, doc) {
+      if (err) {
+        console.log(err);
+        res.status().send('Error getting the location: ' + lid);
+        return;
+      }
 
-    if (doc) {
-      res.status(200).send(doc);
-    }
-    else {
-      res.status(404).send('No location found for ' + lid);
-    }
-  });
+      if (doc) {
+        res.status(200).send(doc);
+      }
+      else {
+        res.status(404).send('No location found for ' + lid);
+      }
+    });
 });
 
 /**

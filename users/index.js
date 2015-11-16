@@ -34,21 +34,22 @@ router.get('/:type/:identifier', function(req, res) {
     condition.email = id;
   }
 
-  query = User.where(condition);
-  query.findOne(function(err, doc) {
-    if (err) {
-      console.log(err);
-      res.status(500).send('Error getting the user ' + id);
-      return;
-    }
+  User.findOne(condition)
+    .populate('reviews')
+    .exec(function(err, doc) {
+      if (err) {
+        console.log(err);
+        res.status(500).send('Error getting the user ' + id);
+        return;
+      }
 
-    if (doc) {
-      res.status(200).send(doc);
-    }
-    else {
-      res.status(404).send('No user found for ' + id);
-    }
-  });
+      if (doc) {
+        res.status(200).send(doc);
+      }
+      else {
+        res.status(404).send('No user found for ' + id);
+      }
+    });
 });
 
 /**
