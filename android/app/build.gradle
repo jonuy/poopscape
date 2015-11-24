@@ -1,8 +1,15 @@
 apply plugin: 'com.android.application'
 
+// Fetching values from secrets.properties
+Properties properties = new Properties();
+FileInputStream fis = new FileInputStream("app/secrets.properties");
+properties.load(fis);
+
+def MAPS_API_KEY = properties.getProperty("MapsApiKey") ?: "Need to set MapsApiKey in app/secrets.properties";
+
 android {
     compileSdkVersion 22
-    buildToolsVersion "21.1.2"
+    buildToolsVersion '23.0.2'
 
     defaultConfig {
         applicationId "co.poopscape.android"
@@ -10,6 +17,8 @@ android {
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
+
+        resValue "string", "maps_api_key", MAPS_API_KEY
     }
     buildTypes {
         release {
@@ -24,4 +33,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:22.2.1'
     compile 'com.android.support:design:22.2.1'
+    compile 'com.google.android.gms:play-services:8.3.0'
 }
