@@ -1,23 +1,23 @@
 package co.poopscape.android;
 
-import android.support.design.widget.TabLayout;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.TextView;
+
+import co.poopscape.android.fragment.MainMapFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -62,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
-
     }
 
 
@@ -129,15 +128,24 @@ public class MainActivity extends AppCompatActivity {
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
+        private MainMapFragment mapFragment;
+
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
+
+            mapFragment = MainMapFragment.newInstance();
         }
 
         @Override
         public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
+            if (position == 0) {
+                return mapFragment;
+            }
+            else {
+                // getItem is called to instantiate the fragment for the given page.
+                // Return a PlaceholderFragment (defined as a static inner class below).
+                return PlaceholderFragment.newInstance(position + 1);
+            }
         }
 
         @Override
@@ -150,11 +158,11 @@ public class MainActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "SECTION 1";
+                    return "LOC ICON";
                 case 1:
-                    return "SECTION 2";
+                    return "LIST ICON";
                 case 2:
-                    return "SECTION 3";
+                    return "SUBMIT";
             }
             return null;
         }

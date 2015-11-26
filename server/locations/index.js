@@ -6,6 +6,11 @@ var mongoose = require('mongoose');
 /**
  * GET /
  *
+ * Query params:
+ *   lng - required
+ *   lat - required
+ *   max_distance - optional. Default is 1600
+ *
  * Return locations near points given in query params.
  */
 router.get('/', function(req, res) {
