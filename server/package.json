@@ -13,6 +13,7 @@
     "body-parser": "^1.14.1",
     "express": "^4.13.3",
     "mongoose": "^4.2.5",
+    "mongoose-seed": "^0.1.5",
     "multer": "^1.1.0"
   },
   "repository": "https://github.com/jonuy/poopscape"
