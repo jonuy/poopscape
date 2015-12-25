@@ -35,3 +35,5 @@ var server = app.listen(3000, function() {
 
   console.log('Poopscape backend listening at http://%s:%s', host, port);
 });
+
+module.exports = server;
