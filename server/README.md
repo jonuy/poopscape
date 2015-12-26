@@ -19,7 +19,9 @@ $ node seed.js
 $ npm test
 ```
 
+
 ### HTTP Endpoints
+
 
 #### Locations
 
@@ -49,9 +51,42 @@ Parameters:
 - lat (required) - Latitude of the location
 - long (required) - Longitude of the location
 
+
 #### Reviews
 
+_WIP_
+
+
 #### Users
+
+##### POST /users/new
+
+Creates a new user.
+
+Parameters:
+- fname (required) - User first name
+- linit (required) - User last initial
+- email (required) - User email address
+
+##### PUT /users/:uid
+
+Update a user's info.
+
+The `:uid` is the user's user ID.
+
+Parameters:
+- fname - Set this to adjust the user first name
+- linit - Set this to change the user's last initial
+- email - Set this to change the user's email address
+##### GET /users/:type/:identifier
+
+Returns a single user by either email or user id.
+
+Possible `:type` fields:
+- id - User ID
+- email - User email
+
+The `:identifier` is the email or user id of the user.
 
 #### Check-ins
 

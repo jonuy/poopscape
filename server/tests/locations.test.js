@@ -33,6 +33,7 @@ describe('', function() {
       .expect(201)
       .expect(function(res) {
         testLocationId = res.body._id;
+        assert(typeof testLocationId === 'string');
       })
       .end(done);
   });
