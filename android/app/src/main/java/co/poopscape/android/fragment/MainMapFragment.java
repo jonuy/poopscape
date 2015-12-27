@@ -41,6 +41,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback,
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
+    private MutableLatLng mCurrentLoc;
 
     public static MainMapFragment newInstance() {
         return new MainMapFragment();
@@ -50,13 +51,14 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback,
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mCurrentLoc = new MutableLatLng();
+
         setupGoogleApiClient();
         createLocationRequest();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main_map, container, false);
 
         mMapView = (MapView)rootView.findViewById(R.id.map);
@@ -125,9 +127,10 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback,
 
     @Override
     public void onConnected(Bundle connectionHint) {
-        Location loc = LocationServices.FusedLocationApi.getLastLocation(
-                mGoogleApiClient);
+        Location loc = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (loc != null) {
+            mCurrentLoc.latitude = loc.getLatitude();
+            mCurrentLoc.longitude = loc.getLongitude();
             Log.v("MAP", loc.getLatitude() + ", " + loc.getLongitude());
         }
 
@@ -165,13 +168,33 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback,
         mMap = googleMap;
 
         // Zoom map to current location
-        LocationManager locMgr = (LocationManager)this.getActivity().getSystemService(Context.LOCATION_SERVICE);
-        Criteria criteria = new Criteria();
-        Location loc = locMgr.getLastKnownLocation(locMgr.getBestProvider(criteria, false));
-        if (loc != null) {
-            LatLng latLng = new LatLng(loc.getLatitude(), loc.getLongitude());
+        if (mCurrentLoc.latitude == 0 && mCurrentLoc.longitude == 0) {
+            LocationManager locMgr = (LocationManager) this.getActivity().getSystemService(Context.LOCATION_SERVICE);
+            Criteria criteria = new Criteria();
+            Location loc = locMgr.getLastKnownLocation(locMgr.getBestProvider(criteria, false));
+            if (loc != null) {
+                mCurrentLoc.latitude = loc.getLatitude();
+                mCurrentLoc.longitude = loc.getLongitude();
+            }
+        }
+
+        if (mCurrentLoc.latitude != 0 && mCurrentLoc.longitude != 0) {
+            LatLng latLng = new LatLng(mCurrentLoc.latitude, mCurrentLoc.longitude);
             mMap.addMarker(new MarkerOptions().position(latLng));
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(loc.getLatitude(), loc.getLongitude()), MAP_ZOOM));
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, MAP_ZOOM));
+        }
+    }
+
+    /**
+     * Basic data structure for storing lat,lng coordinates.
+     */
+    private class MutableLatLng {
+        public double latitude;
+        public double longitude;
+
+        public MutableLatLng() {
+            latitude = 0;
+            longitude = 0;
         }
     }
 }
