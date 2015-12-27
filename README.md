@@ -104,6 +104,14 @@ _TBD_
 Current plan is to host this on Heroku. A pipeline and stuff will eventually get setup. In the meantime, the `server-prod` branch is what will get deployed. The `git subtree` command can be used to ensure only the contents of the **server** folder are in the `server-prod` branch.
 
 ```
+$ git checkout master
 $ git subtree push --prefix server origin server-prod
+```
+
+The Heroku app is configured to automatically deploy on pushes to the `server-prod` branch. Otherwise, to automatically deploy the branch to Heroku, the following command can be run.
+
+```
 $ git push heroku-prod server-prod:master
 ```
+
+Note: the `heroku-prod` remote name can vary depending on the git setup.
