@@ -115,3 +115,11 @@ $ git push heroku-prod server-prod:master
 ```
 
 Note: the `heroku-prod` remote name can vary depending on the git setup.
+
+**Deploy to staging**
+
+Similar to pushing to production, we'll just push to the `server-staging` branch.
+
+```
+$ git subtree push --prefix server origin server-staging
+```
