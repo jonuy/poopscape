@@ -54,8 +54,15 @@ Parameters:
 
 #### Reviews
 
-_WIP_
+##### POST /reviews/new
 
+Create a new review for a location.
+
+Parameters:
+- lid (required) - Location ID the review is for
+- uid (required) - User ID of the user submitting the review
+- rating (required) - _Number_ Rating given to the location
+- review (optional) - _String_ A written review to provide more details
 
 #### Users
 

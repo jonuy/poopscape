@@ -76,7 +76,10 @@ router.post('/new', function(req, res) {
     return User.update({_id: uid}, {$addToSet: {reviews: _id}});
   }).
   then(function() {
-    res.status(202).send('Review saved');
+    var responseData = update;
+    responseData._id = _id;
+
+    res.status(202).send(responseData);
   }).
   then(null, function(err) {
     if (err) {
