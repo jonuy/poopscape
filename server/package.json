@@ -5,16 +5,21 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/.bin/mocha --reporter spec tests/init.test.js"
   },
   "author": "jonuy <jonathanjuy@gmail.com> (http://jonuy.com/)",
   "license": "MIT",
   "dependencies": {
+    "async": "^1.5.0",
     "body-parser": "^1.14.1",
     "express": "^4.13.3",
     "mongoose": "^4.2.5",
     "mongoose-seed": "^0.1.5",
     "multer": "^1.1.0"
   },
-  "repository": "https://github.com/jonuy/poopscape"
+  "repository": "https://github.com/jonuy/poopscape",
+  "devDependencies": {
+    "mocha": "^2.3.4",
+    "supertest": "^1.1.0"
+  }
 }
