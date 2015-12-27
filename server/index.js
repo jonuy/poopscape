@@ -4,8 +4,8 @@ var mongoose = require('mongoose');
 var app = express();
 var router = express.Router();
 
-// Mongoose db connection
-mongoose.connect('mongodb://localhost/poopscape');
+// Mongoose db connection. Use the environment var, if available.
+mongoose.connect(process.env.POOPSCAPE_DB_URI || 'mongodb://localhost/poopscape');
 
 // For parsing application/json requests
 app.use(bodyParser.json());
