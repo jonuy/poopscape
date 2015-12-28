@@ -2,6 +2,7 @@ var express = require('express');
 var mongoose = require('mongoose');
 var Review = require('./models/Review');
 var router = express.Router();
+var responseHelper = require('../helpers/responseHelper.js');
 
 var Location = require('../locations/models/Location');
 var User = require('../users/models/User');
@@ -24,12 +25,12 @@ router.post('/new', function(req, res) {
   var review = req.body.review;
 
   if (!lid || !uid || !rating) {
-    res.status(400).send('Some required parameters are missing');
+    responseHelper.sendError(res, 400, 'Some required parameters are missing');
     return;
   }
 
   if (!isValidObjectId(lid) || !isValidObjectId(uid)) {
-    res.status(400).send('lid or uid is invalid. Needs to either be a 12 byte string or 24 character hex.');
+    responseHelper.sendError(res, 400, 'lid or uid is invalid. Needs to either be a 12 byte string or 24 character hex.');
     return;
   }
 
@@ -84,7 +85,7 @@ router.post('/new', function(req, res) {
   then(null, function(err) {
     if (err) {
       console.log(err);
-      res.status(500).send('Error saving review ' + ref);
+      responseHelper.sendError(res, 500, 'Error saving review ' + ref);
       return;
     }
   });
