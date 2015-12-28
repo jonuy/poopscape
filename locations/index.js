@@ -2,6 +2,7 @@ var express = require('express');
 var Location = require('./models/Location');
 var router = express.Router();
 var mongoose = require('mongoose');
+var responseHelper = require('../helpers/responseHelper.js');
 
 /**
  * GET /
@@ -20,11 +21,11 @@ router.get('/', function(req, res) {
   var maxDist = req.query.max_distance ? Number(req.query.max_distance) : 1600;  // 1600 meters ~= 1 mile
 
   if (!lng) {
-    res.status(400).send('lng query value required');
+    responseHelper.sendError(res, 400, 'lng query value required');
     return;
   }
   else if (!lat) {
-    res.status(400).send('lat query value required');
+    responseHelper.sendError(res, 400, 'lat query value required');
     return;
   }
 
@@ -38,14 +39,14 @@ router.get('/', function(req, res) {
       return Location.populate(results, opts);
     }
     else {
-      res.status(404).send('No locations nearby');
+      responseHelper.sendError(res, 404, 'No locations nearby');
       throw new Error('No locations nearby');
     }
   }).then(function(results) {
     res.status(200).send(results);
   }).then(null, function(err) {
     console.log(err);
-    res.status(500).send('Error finding a location');
+    responseHelper.sendError(res, 500, 'Error finding a location');
     throw new Error();
   });
 });
@@ -77,7 +78,7 @@ router.get('/:lid', function(req, res) {
         res.status(200).send(doc);
       }
       else {
-        res.status(404).send('No location found for ' + lid);
+        responseHelper.sendError(res, 404, 'No location found for ' + lid);
       }
     });
 });
@@ -92,7 +93,7 @@ router.post('/new', function(req, res) {
 
   if (!req.body.name || !req.body.street || !req.body.city || !req.body.state ||
       !req.body.lat || !req.body.lng) {
-    res.status(400).send('Missing one or more of the required params.');
+    responseHelper.sendError(res, 400, 'Missing one or more of the required params.');
     return;
   }
 
@@ -112,7 +113,7 @@ router.post('/new', function(req, res) {
   loc.save(function(err, doc) {
     if (err) {
       console.log(err);
-      res.status(500).send('Error saving the new location');
+      responseHelper.sendError(res, 500, 'Error saving the new location');
       return;
     }
 

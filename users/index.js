@@ -2,6 +2,7 @@ var express = require('express');
 var User = require('./models/User');
 var router = express.Router();
 var mongoose = require('mongoose');
+var responseHelper = require('../helpers/responseHelper.js');
 
 /**
  * GET /:type/:identifier
@@ -16,13 +17,13 @@ router.get('/:type/:identifier', function(req, res) {
 
   // Only email or id type allowed
   if (type !== 'id' && type !== 'email') {
-    res.status(400).send('Invalid type ' + type + '. Only `id` or `email` allowed');
+    responseHelper.sendError(res, 400, 'Invalid type ' + type + '. Only `id` or `email` allowed');
     return;
   }
 
   // Valid ObjectId is either 12 byte string or 24 character hex
   if (type == 'id' && !isValidObjectId(id)) {
-    res.status(400).send('The user ID needs to either be a 12 byte string or 24 character hex');
+    responseHelper.sendError(res, 400, 'The user ID needs to either be a 12 byte string or 24 character hex');
     return;
   }
 
@@ -39,7 +40,7 @@ router.get('/:type/:identifier', function(req, res) {
     .exec(function(err, doc) {
       if (err) {
         console.log(err);
-        res.status(500).send('Error getting the user ' + id);
+        responseHelper.sendError(res, 500, 'Error getting the user ' + id);
         return;
       }
 
@@ -47,7 +48,7 @@ router.get('/:type/:identifier', function(req, res) {
         res.status(200).send(doc);
       }
       else {
-        res.status(404).send('No user found for ' + id);
+        responseHelper.sendError(res, 404, 'No user found for ' + id);
       }
     });
 });
@@ -64,12 +65,12 @@ router.post('/new', function(req, res) {
   var email = req.body.email;
 
   if (!fname || !linit || !email) {
-    res.status(400).send('Missing one or more required params');
+    responseHelper.sendError(res, 400, 'Missing one or more required params');
     return;
   }
 
   if (typeof email !== 'string') {
-    res.status(400).send('Invalid email');
+    responseHelper.sendError(res, 400, 'Invalid email');
   }
   else {
     email = email.toLowerCase();
@@ -84,7 +85,7 @@ router.post('/new', function(req, res) {
     if (doc) {
       errMsg = 'User with this email already exists: ' + email;
       console.log(errMsg);
-      res.status(400).send(errMsg);
+      responseHelper.sendError(res, 400, errMsg);
 
       // Throw error to break promise chain
       throw new Error(errMsg);
@@ -102,7 +103,7 @@ router.post('/new', function(req, res) {
   })
   .then(function(doc) {
     if (doc) {
-      console.log('Created new user: ' + doc.fname + ' ' + doc.linit + '. /' + doc._id);
+      console.log('Created new user: ' + doc.fname + ' ' + doc.linit + '. / ' + doc._id);
       res.status(201).send(doc);
       promise.fulfill();
     }
@@ -110,7 +111,7 @@ router.post('/new', function(req, res) {
   .then(null, function(err) {
     if (err) {
       console.log(err);
-      res.status(500).send('Error saving the new user');
+      responseHelper.sendError(res, 500, 'Error saving the new user');
     }
   });
 });
@@ -125,7 +126,7 @@ router.put('/:uid', function(req, res) {
   var uid = req.params.uid;
 
   if (!isValidObjectId(uid)) {
-    res.status(400).send('The user ID needs to either be a 12 byte string or 24 character hex');
+    responseHelper.sendError(res, 400, 'The user ID needs to either be a 12 byte string or 24 character hex');
     return;
   }
 
@@ -143,7 +144,7 @@ router.put('/:uid', function(req, res) {
   User.findByIdAndUpdate(uid, update, function(err, doc) {
     if (err) {
       console.log(err);
-      res.status(500).send('Error updating user ' + uid);
+      responseHelper.sendError(res, 500, 'Error updating user ' + uid);
       return;
     }
 
@@ -159,7 +160,7 @@ router.put('/:uid', function(req, res) {
       res.status(200).send(doc);
     }
     else {
-      res.status(404).send('No user found for ' + uid);
+      responseHelper.sendError(res, 404, 'No user found for ' + uid);
     }
   });
 });
