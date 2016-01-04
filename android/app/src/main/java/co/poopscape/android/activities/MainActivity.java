@@ -1,4 +1,4 @@
-package co.poopscape.android;
+package co.poopscape.android.activities;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import co.poopscape.android.R;
 import co.poopscape.android.fragment.MainMapFragment;
 
 public class MainActivity extends AppCompatActivity {
