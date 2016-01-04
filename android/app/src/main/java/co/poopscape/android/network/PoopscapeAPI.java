@@ -16,6 +16,9 @@ import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 import co.poopscape.android.BuildConfig;
+import co.poopscape.android.network.models.Location;
+import co.poopscape.android.network.models.LocationDistResponse;
+import co.poopscape.android.network.models.Review;
 import co.poopscape.android.network.models.User;
 
 /**
@@ -73,14 +76,102 @@ public class PoopscapeAPI {
     }
 
     /**
-     * Send request to create a new user
+     * Send request to get an array of location info near a point.
+     *
+     * @param lat Latitude value
+     * @param lng Longitude value
+     * @param listener Listener called on success
+     */
+    public void getLocationNearPoint(float lat, float lng, Response.Listener listener) {
+        int method = Request.Method.GET;
+        String url = getBaseUrl() + LOCATIONS_RES + "?lat=" + String.valueOf(lat) + ",lng=" + String.valueOf(lng);
+        Class responseClass = LocationDistResponse[].class;
+        Map<String, String> headers = null;
+
+        GsonRequest request = new GsonRequest(method, url, null, responseClass, headers, listener, new PoopscapeErrorListener());
+        NetworkHelper.getInstance(mContext).addToRequestQueue(request);
+    }
+
+    /**
+     * Send request to get a location's info by its id.
+     *
+     * @param id Location id
+     * @param listener Listener called on success
+     */
+    public void getLocationById(String id, Response.Listener<Location> listener) {
+        int method = Request.Method.GET;
+        String url = getBaseUrl() + LOCATIONS_RES + "/" + id;
+        Class responseClass = Location.class;
+        Map<String, String> headers = null;
+
+        GsonRequest request = new GsonRequest(method, url, null, responseClass, headers, listener, new PoopscapeErrorListener());
+        NetworkHelper.getInstance(mContext).addToRequestQueue(request);
+    }
+
+    /**
+     * Send request to add a new location.
+     *
+     * @param name Location name
+     * @param street Street address
+     * @param city City address
+     * @param state State address - should be the two-letter abbreviation
+     * @param lat Location's latitude
+     * @param lng Location's longitude
+     * @param listener Listener called on success
+     */
+    public void postNewLocation(String name, String street, String city, String state, float lat,
+                                float lng, Response.Listener listener) {
+        int method = Request.Method.POST;
+        String url = getBaseUrl() + LOCATIONS_RES + "/new";
+        JsonObject data = new JsonObject();
+        data.addProperty("name", name);
+        data.addProperty("street", street);
+        data.addProperty("city", city);
+        data.addProperty("state", state);
+        data.addProperty("lat", lat);
+        data.addProperty("lng", lng);
+        Class responseClass = Location.class;
+        Map<String, String> headers = null;
+
+        GsonRequest request = new GsonRequest(method, url, data, responseClass, headers, listener, new PoopscapeErrorListener());
+        NetworkHelper.getInstance(mContext).addToRequestQueue(request);
+    }
+
+    /**
+     * Send request to submit a new review.
+     *
+     * @param locationId Location id
+     * @param userId User id
+     * @param rating Submitted rating
+     * @param review Submitted review, if any
+     * @param listener Listener called on success
+     */
+    public void postNewReview(String locationId, String userId, int rating, String review, Response.Listener<Review> listener) {
+        int method = Request.Method.POST;
+        String url = getBaseUrl() + REVIEWS_RES + "/new";
+        JsonObject data = new JsonObject();
+        data.addProperty("lid", locationId);
+        data.addProperty("uid", userId);
+        data.addProperty("rating", rating);
+        if (review != null) {
+            data.addProperty("review", review);
+        }
+        Class responseClass = Review.class;
+        Map<String, String> headers = null;
+
+        GsonRequest request = new GsonRequest(method, url, data, responseClass, headers, listener, new PoopscapeErrorListener());
+        NetworkHelper.getInstance(mContext).addToRequestQueue(request);
+    }
+
+    /**
+     * Send request to create a new user.
      *
      * @param firstName User first name
      * @param lastInit User last initial
      * @param email User email
      * @param listener Listener called on success
      */
-    public void postNewUser(String firstName, String lastInit, String email, Response.Listener listener) {
+    public void postNewUser(String firstName, String lastInit, String email, Response.Listener<User> listener) {
         int method = Request.Method.POST;
         String url = getBaseUrl() + USERS_RES + "/new";
         JsonObject data = new JsonObject();
@@ -91,6 +182,65 @@ public class PoopscapeAPI {
         Map<String, String> headers = null;
 
         GsonRequest request = new GsonRequest(method, url, data, responseClass, headers, listener, new PoopscapeErrorListener());
+        NetworkHelper.getInstance(mContext).addToRequestQueue(request);
+    }
+
+    /**
+     * Send request to update a user.
+     *
+     * @param id User id
+     * @param updates Updates to be made to this user
+     * @param listener Listener called on success
+     */
+    public void updateUser(String id, User updates, Response.Listener<User> listener) {
+        int method = Request.Method.PUT;
+        String url = getBaseUrl() + USERS_RES + "/" + id;
+        JsonObject data = new JsonObject();
+        if (updates.getEmail() != null) {
+            data.addProperty("email", updates.getEmail());
+        }
+        if (updates.getFirstName() != null) {
+            data.addProperty("fname", updates.getFirstName());
+        }
+        if (updates.getLastInit() != null) {
+            data.addProperty("linit", updates.getLastInit());
+        }
+        Class responseClass = User.class;
+        Map<String, String> headers = null;
+
+        GsonRequest request = new GsonRequest(method, url, data, responseClass, headers, listener, new PoopscapeErrorListener());
+        NetworkHelper.getInstance(mContext).addToRequestQueue(request);
+    }
+
+    /**
+     * Retrieve a user by its email.
+     *
+     * @param email User email
+     * @param listener Listener called if one is found
+     */
+    public void getUserByEmail(String email, Response.Listener listener) {
+        int method = Request.Method.GET;
+        String url = getBaseUrl() + USERS_RES + "/email/" + email;
+        Class responseClass = User.class;
+        Map<String, String> headers = null;
+
+        GsonRequest request = new GsonRequest(method, url, null, responseClass, headers, listener, new PoopscapeErrorListener());
+        NetworkHelper.getInstance(mContext).addToRequestQueue(request);
+    }
+
+    /**
+     * Retrieve a user by its id.
+     *
+     * @param id User id
+     * @param listener Listener called if one is found
+     */
+    public void getUserById(String id, Response.Listener listener) {
+        int method = Request.Method.GET;
+        String url = getBaseUrl() + USERS_RES + "/id/" + id;
+        Class responseClass = User.class;
+        Map<String, String> headers = null;
+
+        GsonRequest request = new GsonRequest(method, url, null, responseClass, headers, listener, new PoopscapeErrorListener());
         NetworkHelper.getInstance(mContext).addToRequestQueue(request);
     }
 
