@@ -84,7 +84,7 @@ public class PoopscapeAPI {
      */
     public void getLocationNearPoint(float lat, float lng, Response.Listener listener) {
         int method = Request.Method.GET;
-        String url = getBaseUrl() + LOCATIONS_RES + "?lat=" + String.valueOf(lat) + ",lng=" + String.valueOf(lng);
+        String url = getBaseUrl() + LOCATIONS_RES + "?lat=" + String.valueOf(lat) + "&lng=" + String.valueOf(lng);
         Class responseClass = LocationDistResponse[].class;
         Map<String, String> headers = null;
 
