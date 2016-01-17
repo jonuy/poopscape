@@ -26,4 +26,12 @@ public class User {
     public String getEmail() {
         return email;
     }
+
+    @Override
+    public String toString() {
+        return "_id: " + _id + "\n" +
+               "fname: " + fname + "\n" +
+               "linit: " + linit + "\n" +
+               "email: " + email + "\n";
+    }
 }

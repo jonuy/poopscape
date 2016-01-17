@@ -50,7 +50,7 @@ public class PoopscapeAPI {
     private Context mContext;
 
     private PoopscapeAPI(Context context) {
-        mContext = context;
+        mContext = context.getApplicationContext();
     }
 
     public static synchronized PoopscapeAPI getInstance(Context context) {

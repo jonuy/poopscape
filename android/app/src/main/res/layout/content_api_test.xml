@@ -44,6 +44,16 @@
                 android:layout_height="wrap_content"
                 android:text="GET loc by id"/>
 
+            <Button android:id="@+id/testNewReview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="POST /reviews/new"/>
+
+            <Button android:id="@+id/testNewUser"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="POST /users/new"/>
+
         </LinearLayout>
 
     </ScrollView>

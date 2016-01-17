@@ -34,4 +34,14 @@ public class Review {
     public String getPhoto() {
         return photo;
     }
+
+    @Override
+    public String toString() {
+        return "_id: " + _id + "\n" +
+               "lid: " + lid + "\n" +
+               "uid: " + uid + "\n" +
+               "rating: " + rating + "\n" +
+               "review: " + review + "\n" +
+               "photo: " + photo + "\n";
+    }
 }

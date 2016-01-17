@@ -17,11 +17,14 @@ import co.poopscape.android.R;
 import co.poopscape.android.network.PoopscapeAPI;
 import co.poopscape.android.network.models.Location;
 import co.poopscape.android.network.models.LocationDistResponse;
+import co.poopscape.android.network.models.Review;
+import co.poopscape.android.network.models.User;
 
 public class ApiTestActivity extends AppCompatActivity implements View.OnClickListener {
 
     TextView mResponseView;
     String mTestLocId = "";
+    String mTestUserId = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,10 +39,14 @@ public class ApiTestActivity extends AppCompatActivity implements View.OnClickLi
         Button btnTestNewLocation = (Button) findViewById(R.id.testNewLocation);
         Button btnTestGetLocNearPoint = (Button) findViewById(R.id.testGetLocNearPoint);
         Button btnTestGetLocById = (Button) findViewById(R.id.testGetLocById);
+        Button btnTestNewReview = (Button) findViewById(R.id.testNewReview);
+        Button btnTestNewUser = (Button) findViewById(R.id.testNewUser);
 
         btnTestNewLocation.setOnClickListener(this);
         btnTestGetLocNearPoint.setOnClickListener(this);
         btnTestGetLocById.setOnClickListener(this);
+        btnTestNewReview.setOnClickListener(this);
+        btnTestNewUser.setOnClickListener(this);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -62,6 +69,12 @@ public class ApiTestActivity extends AppCompatActivity implements View.OnClickLi
                 break;
             case R.id.testGetLocById:
                 getLocById();
+                break;
+            case R.id.testNewReview:
+                postNewReview();
+                break;
+            case R.id.testNewUser:
+                postNewUser();
                 break;
         }
 
@@ -134,4 +147,50 @@ public class ApiTestActivity extends AppCompatActivity implements View.OnClickLi
         api.getLocationById(mTestLocId, listener);
     }
 
+    private void postNewReview() {
+        if (mTestLocId.isEmpty()) {
+            Toast.makeText(this, "Post a new location or get locations near a point first", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (mTestUserId.isEmpty()) {
+            Toast.makeText(this, "Post a new user first", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        PoopscapeAPI api = PoopscapeAPI.getInstance(this);
+
+        Response.Listener listener = new Response.Listener() {
+            @Override
+            public void onResponse(Object o) {
+                Review review = (Review)o;
+
+                mResponseView.setText(review.toString());
+            }
+        };
+
+        int rating = 5;
+        String review = "Lorem ipsum dolor sit test review amet.";
+        api.postNewReview(mTestLocId, mTestUserId, rating, review, listener);
+    }
+
+    private void postNewUser() {
+        PoopscapeAPI api = PoopscapeAPI.getInstance(this);
+
+        Response.Listener listener = new Response.Listener() {
+            @Override
+            public void onResponse(Object o) {
+                User user = (User)o;
+
+                mTestUserId = user.getId();
+
+                mResponseView.setText(user.toString());
+            }
+        };
+
+        String firstName = "TestFName";
+        String lastInit = "L";
+        String email = "testemail@example.com";
+        api.postNewUser(firstName, lastInit, email, listener);
+    }
 }
