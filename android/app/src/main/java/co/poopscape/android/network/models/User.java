@@ -11,6 +11,40 @@ public class User {
     // @TODO array Review reviews
     // @TODO array CheckIn checkins
 
+    private User(final UserBuilder userBuilder) {
+        fname = userBuilder.fname;
+        linit = userBuilder.linit;
+        email = userBuilder.email;
+    }
+
+    /**
+     * Builder
+     */
+    public static class UserBuilder {
+        private String fname;
+        private String linit;
+        private String email;
+
+        public UserBuilder fname(final String _fname) {
+            this.fname = _fname;
+            return this;
+        }
+
+        public UserBuilder linit(final String _linit) {
+            this.linit = _linit;
+            return this;
+        }
+
+        public UserBuilder email(final String _email) {
+            this.email = _email;
+            return this;
+        }
+
+        public User build() {
+            return new User(this);
+        }
+    }
+
     public String getId() {
         return _id;
     }
