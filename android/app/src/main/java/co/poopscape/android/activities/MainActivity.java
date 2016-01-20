@@ -1,5 +1,6 @@
-package co.poopscape.android;
+package co.poopscape.android.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import co.poopscape.android.R;
 import co.poopscape.android.fragment.MainMapFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -80,7 +82,8 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_apitest) {
+            startActivity(new Intent(this, ApiTestActivity.class));
             return true;
         }
 
